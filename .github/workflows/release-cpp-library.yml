@@ -28,7 +28,8 @@ jobs:
         New-Item -Path "release/lib", "release/include" -ItemType Directory -Force
         Copy-Item "bin/Release/*" "release/lib/"
         Get-ChildItem "bin/Debug/*" | ForEach-Object {
-          Copy-Item $_.FullName "release/lib/$($_.Name)-d"
+          $newName = $_.Name -replace "(.*)\.(.*)", '$1-d.$2'
+          Copy-Item $_.FullName "release/lib/$newName"
         }
         Copy-Item "include/*" "release/include/"
         Compress-Archive -Path "release/*" -DestinationPath "release-windows.zip" -Force
