@@ -2,7 +2,7 @@ name: Release C++ Library
 
 on:
   release:
-    types: [created]
+    types: [created, published]
 
 jobs:
   build-and-release:
