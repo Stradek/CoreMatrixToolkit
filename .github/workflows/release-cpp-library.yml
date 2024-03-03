@@ -1,0 +1,57 @@
+name: Release C++ Library
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    name: Build and Release on Windows
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+      
+    - name: Set up CMake, Ninja, and Visual Studio
+      uses: actions/setup-cmake@v1
+      with:
+        cmake-version: '3.20' # Specify the CMake version you need
+
+    - name: Build C++ Project
+      run: |
+        cmake -S . -B build -G "Ninja"
+        cmake --build build --config Release
+
+    - name: Prepare release directory, copy files, and zip on Windows
+      run: |
+        New-Item -Path "release/lib", "release/include" -ItemType Directory -Force
+        Copy-Item "bin/Release/*" "release/lib/"
+        Get-ChildItem "bin/Debug/*" | ForEach-Object {
+          Copy-Item $_.FullName "release/lib/$($_.Name)-d"
+        }
+        Copy-Item "include/*" "release/include/"
+        Compress-Archive -Path "release/*" -DestinationPath "release-windows.zip" -Force
+      shell: pwsh
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref_name }}
+        draft: false
+        prerelease: false
+        
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./release-windows.zip
+        asset_name: release-windows.zip
+        asset_content_type: application/zip
