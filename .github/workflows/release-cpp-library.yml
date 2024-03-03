@@ -16,7 +16,7 @@ jobs:
 
     - name: Build C++ Project
       run: |
-        cmake -S . -B build -G "Ninja"
+        cmake -G "Visual Studio 17 2022" -S . -B build 
         cmake --build build --config Release
 
     - name: Prepare release directory, copy files, and zip on Windows
