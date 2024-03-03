@@ -1,8 +1,9 @@
 name: Release C++ Library
 
 on:
-  release:
-    types: [created, published]
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   build-and-release:
