@@ -16,7 +16,7 @@ include(CMake/CMakeShared.cmake)
 # Project
 #
 
-project(TemplateCMakeProject)
+project(CoreMatrixToolkit)
 
 # Setting up custom properties and functions from "CMakeShared.cmake" file
 custom_cmake_setup()
@@ -39,7 +39,7 @@ set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 get_source_files(SRC_FILES 0 ${SOURCE_DIR})
 get_header_files(HEADER_FILES 0 ${INCLUDE_DIR})
 
-add_library(TemplateCMakeProject "${SRC_FILES};${HEADER_FILES}")
+add_library(CoreMatrixToolkit "${SRC_FILES};${HEADER_FILES}")
 include_directories(${INCLUDE_DIR})
 
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT TemplateCMakeProject)
+set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT CoreMatrixToolkit)
