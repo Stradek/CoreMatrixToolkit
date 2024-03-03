@@ -1,0 +1,67 @@
+name: Build Windows
+
+env:
+  BUILD_DIR: "build/"
+
+on: 
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  configure:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        submodules: true
+
+    - name: Remove build directory files
+      run: |
+        $buildDir = $env:BUILD_DIR
+        if (Test-Path $buildDir)
+        {
+          Remove-Item $buildDir -Recurse -Force
+        }
+
+    - name: Configure CMake
+      run: cmake -G "Visual Studio 17 2022" -B $env:BUILD_DIR
+
+    - name: Save build directory
+      uses: actions/upload-artifact@v3
+      with:
+        name: build
+        path: ${{ env.BUILD_DIR }}
+        
+  build:
+    needs: configure
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        configuration: [Release, Debug]
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        submodules: true
+
+    - name: Remove build directory if exists
+      run: |
+        $buildDir = $env:BUILD_DIR
+        if (Test-Path $buildDir)
+        {
+          Remove-Item $buildDir -Recurse -Force
+        }
+
+    - name: Retrieve build directory
+      uses: actions/download-artifact@v3
+      with:
+        name: build
+        path: ${{ env.BUILD_DIR }}
+
+    - name: Build ${{matrix.target}} (${{matrix.configuration}})
+      run: cmake --build $env:BUILD_DIR --config ${{matrix.configuration}}
