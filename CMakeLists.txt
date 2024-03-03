@@ -34,8 +34,12 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 #
 
 set(SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
-get_all_target_files(FILES 0 ${SOURCE_DIR})
+set(INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-add_executable(TemplateCMakeProject "${FILES}")
+get_source_files(SRC_FILES 0 ${SOURCE_DIR})
+get_header_files(HEADER_FILES 0 ${INCLUDE_DIR})
+
+add_library(TemplateCMakeProject "${SRC_FILES};${HEADER_FILES}")
+include_directories(${INCLUDE_DIR})
 
 set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT TemplateCMakeProject)
