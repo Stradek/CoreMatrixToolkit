@@ -14,7 +14,12 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    - name: Build C++ Project
+    - name: Build C++ Project - Debug
+      run: |
+        cmake -G "Visual Studio 17 2022" -S . -B build 
+        cmake --build build --config Debug
+        
+    - name: Build C++ Project - Release
       run: |
         cmake -G "Visual Studio 17 2022" -S . -B build 
         cmake --build build --config Release
