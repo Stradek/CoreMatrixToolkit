@@ -26,6 +26,12 @@ public:
         return m_instance;
     }
 
+    static void destroyInstance()
+    {
+		assert(m_instance);
+		m_instance.reset();
+	}
+
     static std::shared_ptr<JobScheduler>& getInstance()
     {
         assert(m_instance);
