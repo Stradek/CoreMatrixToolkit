@@ -1,5 +1,49 @@
+# VS Code workspace
+.vscode/
+
+# Idea Jetbrains Rider folder
+.idea/
+
+# Solution files
+*.sln
+
+# MSBuild setting files
+*.vcxproj
+*.vcxproj.filters
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+*_i.c
+*_p.c
+*.ilk
+*.meta
+*.obj
+*.pch
+*.pdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.log
+*.tlog
+*.vspscc
+*.vssscc
+.builds
+
+
+# CMake artifacts
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+
 # Binaries directory
-/bin/
+bin/
 
 # Bulid artifacts directory
-/build/
+build/

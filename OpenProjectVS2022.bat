@@ -6,12 +6,12 @@ rem Software distributed under the permissive MIT License.
 
 set myPath=%~dp0
 
-set search_dir="%myPath%/build/CMake-VS2022-x64/"
+set sourceDir="%myPath%"
 
 :: Find the first .sln file
-for /r "%search_dir%" %%i in (*.sln) do (
-    set "sln_file=%%i"
-    goto :open_solution
+for %%i in (*.sln) do (
+   set sln_file=%%~fi
+   goto :open_solution
 )
 
 pause

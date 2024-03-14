@@ -1,0 +1,100 @@
+{
+    "version": 8,
+    "configurePresets": [
+        {
+            "name": "default-windows",
+            "hidden": true,
+            "displayName": "Default Windows",
+            "description": "Default build using MSVC",
+            "generator": "Visual Studio 17 2022",
+            "cacheVariables": {
+                "CMAKE_ARCHIVE_OUTPUT_DIRECTORY": "${sourceDir}/bin",
+                "CMAKE_LIBRARY_OUTPUT_DIRECTORY": "${sourceDir}/bin",
+                "CMAKE_CONFIGURATION_TYPES": "Debug;Release",
+                "CMAKE_CXX_STANDARD": "17",
+                "CMAKE_C_COMPILER": "cl.exe",
+                "CMAKE_CXX_COMPILER": "cl.exe",
+                "CMAKE_CXX_STANDARD_REQUIRED": {
+                    "type": "BOOL",
+                    "value": "ON"
+                },
+                "ENABLE_FAST_MATH": {
+                    "type": "BOOL",
+                    "value": "ON"
+                },
+                "ENABLE_MULTITHREADED_COMPILATION": {
+                    "type": "BOOL",
+                    "value": "ON"
+                },
+                "USE_VS_FOLDER_FEATURE": {
+                    "type": "BOOL",
+                    "value": "ON"
+                },
+                "ENABLE_EDIT_AND_CONTINUE": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "ENABLE_WARNINGS_AND_DEBUG_INFO": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "ENABLE_INTRISTIC_FUNCTIONS": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "ENABLE_PROGRAM_OPTIMIZATION": {
+                    "type": "BOOL",
+                    "value": "OFF"
+                },
+                "CUSTOM_MACROS_PREFIX": {
+                    "type": "STRING",
+                    "value": "PROJECT_NAME_"
+                }
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "x64-windows",
+            "hidden": true,
+            "displayName": "Windows x64",
+            "description": "Build for Windows x64",
+            "inherits": "default-windows",
+            "architecture": "x64"
+        },
+        {
+            "name": "x64-windows-debug",
+            "displayName": "Windows x64 Debug",
+            "description": "Build for Windows x64 in Debug configuration",
+            "inherits": "x64-windows",
+            "cacheVariables": {
+                "ENABLE_WARNINGS_AND_DEBUG_INFO": "ON"
+            }
+        },
+        {
+            "name": "x64-windows-release",
+            "displayName": "Windows x64 Release",
+            "description": "Build for Windows x64 in Release configuration",
+            "inherits": "x64-windows",
+            "cacheVariables": {
+                "ENABLE_INTRISTIC_FUNCTIONS": "ON",
+                "ENABLE_PROGRAM_OPTIMIZATION": "ON"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "x64-windows-debug",
+            "configurePreset": "x64-windows-debug",
+            "configuration": "Debug"
+        },
+        {
+            "name": "x64-windows-release",
+            "configurePreset": "x64-windows-release",
+            "configuration": "Release"
+        }
+    ]
+}
