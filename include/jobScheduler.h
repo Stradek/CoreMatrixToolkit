@@ -9,6 +9,14 @@
 #include <cassert>
 #include <future>
 
+enum class JobStatus : uint8_t
+{
+    Pending,
+    Running,
+    Failed,
+    Finished
+};
+
 class JobScheduler
 {
 public:
@@ -39,23 +47,27 @@ public:
     }
 
     template<class F, class... Args>
-    auto enqueueJob(F&& function, Args... args) -> std::future<typename std::result_of<F(Args...)>::type>
+    auto enqueueRepeatingJob(F&& function, Args... args) -> std::future<typename std::result_of<F(Args...)>::type>
     {
-        // don't allow enqueueing after stopping the pool
-        assert(!m_stop);
-
-        using ReturnType = typename std::invoke_result<F, Args...>::type;
-        auto task = std::make_shared<std::packaged_task<ReturnType()>>(
-            std::bind(std::forward<F>(function), std::forward<Args>(args)...)
-        );
-
-        std::future<ReturnType> res = task->get_future();
+        std::shared_ptr<std::packaged_task<JobStatus()>> task = std::make_shared<std::packaged_task<JobStatus()>>([function, args...]() -> JobStatus
         {
-            std::unique_lock<std::mutex> lock(m_queueMutex);
-            m_tasks.emplace([task](){ (*task)(); });
-        }
-        m_workerThreadWaitCondition.notify_one();
-        return res;
+            JobStatus status;
+            do
+            {
+                status = function(args...);
+            } while(status == JobStatus::Running);
+            
+            return status;
+        });
+        
+        return enqueueTask<F, Args...>(task);
+    }
+
+    template<class F, class... Args>
+    auto enqueueOneShotJob(F&& function, Args... args) -> std::future<typename std::result_of<F(Args...)>::type>
+    {
+        std::shared_ptr<std::packaged_task<JobStatus()>> task = std::make_shared<std::packaged_task<JobStatus()>>(std::forward<F>(function), std::forward<Args>(args)...);
+        return enqueueTask<F, Args...>(task);
     }
 
 private:
@@ -64,6 +76,22 @@ private:
     static std::shared_ptr<JobScheduler> createShared(size_t workerThreadsCount)
     {
         return std::shared_ptr<JobScheduler>(new JobScheduler(workerThreadsCount));
+    }
+
+    template<class F, class... Args>
+    auto enqueueTask(std::shared_ptr<std::packaged_task<JobStatus()>> task) -> std::future<typename std::result_of<F(Args...)>::type>
+    {
+        // don't allow enqueueing after stopping the pool
+        assert(!m_stop);
+        
+        using ReturnType = typename std::invoke_result<F, Args...>::type;
+        std::future<ReturnType> res = task->get_future();
+        {
+            std::unique_lock<std::mutex> lock(m_queueMutex);
+            m_tasks.emplace([task](){ (*task)(); });
+        }
+        m_workerThreadWaitCondition.notify_one();
+        return res;
     }
 
     static std::shared_ptr<JobScheduler> m_instance;
