@@ -1,19 +1,18 @@
 {
     "version": 8,
     "configurePresets": [
-        {
-            "name": "default-windows",
-            "hidden": true,
-            "displayName": "Default Windows",
-            "description": "Default build using MSVC",
-            "generator": "Visual Studio 17 2022",
+		{
+			"name": "base",
+			"hidden": true,
+            "displayName": "Base Preset",
+            "generator": "",
             "cacheVariables": {
-                "CMAKE_ARCHIVE_OUTPUT_DIRECTORY": "${sourceDir}/bin",
+				"CMAKE_ARCHIVE_OUTPUT_DIRECTORY": "${sourceDir}/bin",
                 "CMAKE_LIBRARY_OUTPUT_DIRECTORY": "${sourceDir}/bin",
                 "CMAKE_CONFIGURATION_TYPES": "Debug;Release",
                 "CMAKE_CXX_STANDARD": "17",
-                "CMAKE_C_COMPILER": "cl.exe",
-                "CMAKE_CXX_COMPILER": "cl.exe",
+                "CMAKE_C_COMPILER": "",
+                "CMAKE_CXX_COMPILER": "",
                 "CMAKE_CXX_STANDARD_REQUIRED": {
                     "type": "BOOL",
                     "value": "ON"
@@ -50,12 +49,25 @@
                     "type": "STRING",
                     "value": "PROJECT_NAME_"
                 }
+			}
+		},
+        {
+            "name": "default-windows",
+			"inherits": "base",
+            "hidden": true,
+            "displayName": "Default Windows",
+            "description": "Default build using MSVC",
+            "generator": "Visual Studio 17 2022",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl.exe",
+                "CMAKE_CXX_COMPILER": "cl.exe"
             },
             "condition": {
                 "type": "equals",
                 "lhs": "${hostSystemName}",
                 "rhs": "Windows"
-            }
+            },
+			"architecture": ""
         },
         {
             "name": "x64-windows",
@@ -82,6 +94,36 @@
             "cacheVariables": {
                 "ENABLE_INTRISTIC_FUNCTIONS": "ON",
                 "ENABLE_PROGRAM_OPTIMIZATION": "ON"
+            }
+        },
+		{
+            "name": "default-mingw64-make",
+            "hidden": true,
+			"inherits": "base",
+            "displayName": "Mingw64 Make",
+            "description": "Default build using GNU compilers",
+            "generator": "MinGW Makefiles",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc.exe",
+                "CMAKE_CXX_COMPILER": "g++.exe"
+            }
+        },
+		{
+            "name": "x64-mingw64-make",
+            "displayName": "Mingw64 Make x64",
+            "description": "Build for Windows x64 in Debug configuration",
+            "inherits": "default-mingw64-make",
+            "cacheVariables": {
+                "ENABLE_WARNINGS_AND_DEBUG_INFO": "ON"
+            }
+        },
+		{
+            "name": "x64-mingw64-make-debug",
+            "displayName": "Mingw64 Make x64 Debug",
+            "description": "Build for Windows x64 in Debug configuration",
+            "inherits": "x64-mingw64-make",
+            "cacheVariables": {
+                "ENABLE_WARNINGS_AND_DEBUG_INFO": "ON"
             }
         }
     ],

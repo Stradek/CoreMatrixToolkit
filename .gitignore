@@ -4,6 +4,9 @@
 # Idea Jetbrains Rider folder
 .idea/
 
+# Cache
+.cache/
+
 # Solution files
 *.sln
 
@@ -47,3 +50,6 @@ bin/
 
 # Bulid artifacts directory
 build/
+
+# symbolic link file needed for clangd 
+compile_commands.json

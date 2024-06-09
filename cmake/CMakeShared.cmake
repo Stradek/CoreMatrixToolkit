@@ -17,6 +17,9 @@ function(custom_cmake_setup)
     # Specify required C++ standard version.
     set(CMAKE_CXX_STANDARD 17 PARENT_SCOPE)
     set(CMAKE_CXX_STANDARD_REQUIRED ON PARENT_SCOPE)
+
+	# Generate compile_commands.json
+	set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
     
     # Enable fast math.
     if(MSVC)
